@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfilePulse</title>
+    <style>
+        :root {
+            --primary: #0A66C2;
+            --primary-dark: #004182;
+            --primary-light: #EBF3FB;
+            --success: #21C55D;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --text-primary: #1D2226;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border: #E0E0E0;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --bg: #F3F6F8;
+            --white: #FFFFFF;
+            
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text-primary);
+        }
+
+        header {
+            background-color: var(--white);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .header-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-left: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex: 1;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled { background: #94A3B8; cursor: not-allowed; }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover { background: var(--bg); }
+
+        .small-text {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        /* Dashboard Section */
+        #dashboard-section {
+            display: none;
+            animation: card-enter 0.4s ease forwards;
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes card-enter {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+        }
+
+        .profile-summary {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--border);
+            object-fit: cover;
+        }
+
+        .summary-details h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.5rem;
+        }
+
+        .summary-details p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Score Breakdown UI */
+        .score-container {
+            text-align: center;
+            background: var(--primary-light);
+            padding: 16px 24px;
+            border-radius: 12px;
+        }
+
+        .score-breakdown {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .score-source {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .score-source span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .score-source strong {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .score-math {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .score-total strong {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .score-gauge-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 6px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin: 0 auto 8px auto;
+        }
+
+        /* Export Actions */
+        .export-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Dashboard Columns */
+        .dashboard-columns {
+            display: flex;
+            gap: 32px;
+        }
+
+        .col-github, .col-linkedin {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .col-header {
+            font-size: 1.25rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin: 8px 0;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .charts-row {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-container {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .chart-container h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        .repos-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .repo-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .repo-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            margin-bottom: 6px;
+            word-break: break-all;
+        }
+
+        .repo-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            flex: 1;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .repo-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .repo-language-color {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        /* Strengths & Weaknesses */
+        .sw-container {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .sw-container h3 {
+            margin-top: 0;
+            font-size: 1.125rem;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .sw-section {
+            margin-bottom: 16px;
+        }
+        
+        .sw-section h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+        }
+
+        .sw-section ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .sw-section ul li {
+            margin-bottom: 4px;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--primary-light);
+            border-top: 2px solid var(--white);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 900px) {
+            .dashboard-columns { flex-direction: column; }
+            .dashboard-header { flex-direction: column; gap: 24px; }
+            .score-container { width: 100%; }
+            .export-actions { width: 100%; flex-direction: row; }
+            .export-actions button { flex: 1; }
+        }
+        
+        @media (max-width: 640px) {
+            .input-section { flex-direction: column; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .repos-grid { grid-template-columns: 1fr; }
+            .score-breakdown { flex-wrap: wrap; }
+        }
+    </style>
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- html2canvas and jsPDF for Exports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 class="logo">ProfilePulse</h1>
+            <p class="tagline">Your Professional Activity at a Glance</p>
+        </div>
+        <div class="header-links">
+            <a href="#">How to export LinkedIn data</a>
+            <a href="#">About</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Input Section -->
+        <div class="input-section" id="input-section">
+            <div class="card" id="github-card">
+                <h2>
+                    <svg height="24" width="24" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                    </svg>
+                    Enter GitHub Username
+                </h2>
+                <div class="input-group">
+                    <input type="text" id="github-input" placeholder="e.g. torvalds" />
+                    <button class="btn-primary" id="github-fetch-btn">
+                        <span class="spinner" id="github-spinner"></span>Fetch Profile
+                    </button>
+                    <button class="btn-secondary" id="github-clear-btn" style="display: none;">Clear</button>
+                </div>
+                <div class="error-message" id="github-error"></div>
+            </div>
+
+            <div class="card" id="linkedin-card">
+                <h2>
+                    <svg height="24" width="24" viewBox="0 0 24 24" fill="#0A66C2">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn Profile
+                </h2>
+
+                <!-- OPTION A: LinkedIn URL -->
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 6px;">🔗 Your LinkedIn Profile URL (optional)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="url" id="linkedin-url-input" placeholder="https://linkedin.com/in/your-username" style="flex:1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.875rem;" />
+                        <button class="btn-primary" id="linkedin-url-btn" style="padding: 8px 14px; font-size: 0.875rem;">Save</button>
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0;">Used as a clickable link in your dashboard & PDF export. No data is fetched.</p>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border); margin: 12px 0;">
+
+                <!-- OPTION B: Manual Self-Assessment -->
+                <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 0.8rem; color: var(--text-secondary);">
+                    <input type="checkbox" id="linkedin-author-check" style="margin-top: 2px;">
+                    <label for="linkedin-author-check"><strong>I confirm I am this profile's owner</strong> — unlock PDF upload &amp; self-assessment scoring.</label>
+                </div>
+
+                <!-- Manual form (hidden until checkbox checked) -->
+                <div id="linkedin-manual-form" style="display:none; background: var(--bg); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                    <p style="margin: 0 0 10px; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">📋 Self-Assessment Form — fill in your LinkedIn stats:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.8rem;">
+                        <div>
+                            <label style="color: var(--text-secondary);">Connections (exact number or 500+)</label>
+                            <input type="text" id="li-connections" placeholder="e.g. 320 or 500+" style="width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; margin-top: 4px;">
+                        </div>
+                        <div>
+                            <label style="color: var(--text-secondary);">Number of Skills listed</label>
+                            <input type="number" id="li-skills" placeholder="e.g. 12" min="0" style="width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; margin-top: 4px;">
+                        </div>
+                        <div>
+                            <label style="color: var(--text-secondary);">Certifications / Courses</label>
+                            <input type="number" id="li-certs" placeholder="e.g. 3" min="0" style="width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; margin-top: 4px;">
+                        </div>
+                        <div>
+                            <label style="color: var(--text-secondary);">Work Experience (years)</label>
+                            <input type="number" id="li-experience" placeholder="e.g. 4" min="0" style="width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; margin-top: 4px;">
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 0.8rem;">
+                        <label><input type="checkbox" id="li-has-photo"> Has profile photo</label>
+                        <label><input type="checkbox" id="li-has-headline"> Has professional headline</label>
+                        <label><input type="checkbox" id="li-has-about"> Has About section</label>
+                        <label><input type="checkbox" id="li-has-featured"> Has Featured section</label>
+                    </div>
+                    <button class="btn-primary" id="linkedin-manual-submit" style="margin-top: 12px; width: 100%; font-size: 0.875rem;">✅ Calculate LinkedIn Score</button>
+                </div>
+
+                <label for="linkedin-upload" id="linkedin-upload-label" class="btn-secondary" style="text-align: center; display: none; box-sizing: border-box; cursor: not-allowed; margin: 0; opacity: 0.5; padding: 8px 20px; font-size: 0.875rem;">
+                    <span class="spinner" id="linkedin-spinner"></span>📄 Also upload LinkedIn PDF (optional)
+                </label>
+                <input type="file" id="linkedin-upload" accept=".pdf" style="display: none;" disabled />
+                <div id="linkedin-file-info" style="display: none; justify-content: space-between; align-items: center; font-size: 0.875rem; margin-top: 8px;">
+                    <span id="linkedin-filename" style="color: var(--success); font-weight: 600;"></span>
+                    <a href="#" id="linkedin-remove-btn" style="color: var(--danger); text-decoration: none;">Remove file</a>
+                </div>
+                <div class="error-message" id="linkedin-error" style="border: 1px solid var(--warning); background: #FFFBEB; padding: 12px; color: #B45309; border-radius: 6px; margin-top: 12px;"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            
+            <div class="dashboard-header">
+                <div class="profile-summary" id="profile-summary">
+                    <img src="" alt="Avatar" class="avatar" id="summary-avatar" style="display:none;">
+                    <div class="summary-details">
+                        <h3 id="summary-name">Profile</h3>
+                        <p>
+                            <span id="summary-github" style="display:none;">@username</span> 
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="score-container" id="score-container">
+                    <div class="score-breakdown">
+                        <div class="score-source" id="score-block-github" style="display:none;">
+                            <span>GitHub Score</span>
+                            <strong id="score-github-val">--/50</strong>
+                        </div>
+                        <div class="score-math" id="score-math-plus" style="display:none;">+</div>
+                        <div class="score-source" id="score-block-linkedin" style="display:none;">
+                            <span>LinkedIn Score</span>
+                            <strong id="score-linkedin-val">--/50</strong>
+                        </div>
+                        <div class="score-math" id="score-math-equals" style="display:none;">=</div>
+                        <div class="score-source score-total">
+                            <div class="score-gauge-ring" id="score-total-val">0</div>
+                            <span id="score-total-label">Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-actions">
+                    <button class="btn-primary" onclick="exportAsImage()">📸 Download Image</button>
+                    <button class="btn-secondary" onclick="exportAsPDF()">📄 Download PDF</button>
+                </div>
+            </div>
+            
+            <div class="dashboard-columns">
+                <!-- GITHUB COLUMN -->
+                <div class="col-github" id="col-github" style="display: none;">
+                    <h2 class="col-header">
+                        <svg height="24" width="24" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                        </svg>
+                        GitHub Activity
+                    </h2>
+                    
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-repos">-</div>
+                            <div class="kpi-label">Repositories</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-stars">-</div>
+                            <div class="kpi-label">Total Stars</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-followers">-</div>
+                            <div class="kpi-label">Followers</div>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <h3>Language Distribution</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="language-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Contribution Activity (12m)</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="activity-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="repos-section">
+                        <h3>Top Repositories</h3>
+                        <div class="repos-grid" id="repos-grid"></div>
+                    </div>
+                </div>
+
+                <!-- LINKEDIN COLUMN -->
+                <div class="col-linkedin" id="col-linkedin" style="display: none;">
+                    <h2 class="col-header">
+                        <svg height="24" width="24" viewBox="0 0 24 24" fill="#0A66C2">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                        LinkedIn Profile
+                        <a id="li-url-badge" href="#" target="_blank" rel="noopener noreferrer" style="display:none; margin-left: auto; font-size: 0.75rem; font-weight: 600; background: #0A66C2; color: white; padding: 4px 10px; border-radius: 20px; text-decoration: none;">🔗 View Profile</a>
+                    </h2>
+                    
+                    <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;">
+                        <div class="kpi-card" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; padding: 24px;">
+                            <div style="font-size: 2rem;">👥</div>
+                            <div class="kpi-value" id="kpi-connections" style="font-size: 2.5rem;">-</div>
+                            <div class="kpi-label" style="font-size: 1rem;">Connections / Followers</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-li-skills">-</div>
+                            <div class="kpi-label">Skills Listed</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-li-certs">-</div>
+                            <div class="kpi-label">Certifications</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-li-exp">-</div>
+                            <div class="kpi-label">Yrs Experience</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-li-completeness">-</div>
+                            <div class="kpi-label">Profile Completeness</div>
+                        </div>
+                    </div>
+
+                    <div class="sw-container">
+                        <h3>Profile Analysis</h3>
+                        <div class="sw-section">
+                            <h4 style="color: var(--success)">✅ Strong Areas</h4>
+                            <ul id="sw-strengths">
+                                <li>Loading...</li>
+                            </ul>
+                        </div>
+                        <div class="sw-section">
+                            <h4 style="color: var(--warning)">⚠️ Areas to Improve</h4>
+                            <ul id="sw-weaknesses">
+                                <li>Loading...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        ProfilePulse — Free, open, privacy-first.<br>
+        We do not store any data. Everything runs in your browser.
+    </footer>
+
+    <script>
+        const state = {
+            github: { loaded: false, username: null, user: null, repos: [], events: [], error: null },
+            linkedin: {
+                loaded: false,
+                url: null,
+                filename: null,
+                rawText: null,
+                parsed: { name: 'Name not found', connections: '-', skills: [], certifications: 0 },
+                manual: { connections: '-', skills: 0, certs: 0, experience: 0, hasPhoto: false, hasHeadline: false, hasAbout: false, hasFeatured: false },
+                manualSubmitted: false,
+                error: null
+            },
+            charts: { language: null, activity: null }
+        };
+
+        const elements = {
+            githubInput: document.getElementById('github-input'),
+            githubFetchBtn: document.getElementById('github-fetch-btn'),
+            githubClearBtn: document.getElementById('github-clear-btn'),
+            githubSpinner: document.getElementById('github-spinner'),
+            githubError: document.getElementById('github-error'),
+            
+            linkedinUpload: document.getElementById('linkedin-upload'),
+            linkedinUploadLabel: document.getElementById('linkedin-upload-label'),
+            linkedinSpinner: document.getElementById('linkedin-spinner'),
+            linkedinFileInfo: document.getElementById('linkedin-file-info'),
+            linkedinFilename: document.getElementById('linkedin-filename'),
+            linkedinRemoveBtn: document.getElementById('linkedin-remove-btn'),
+            linkedinError: document.getElementById('linkedin-error'),
+            
+            dashboardSection: document.getElementById('dashboard-section'),
+            colGithub: document.getElementById('col-github'),
+            colLinkedin: document.getElementById('col-linkedin'),
+            
+            summaryAvatar: document.getElementById('summary-avatar'),
+            summaryName: document.getElementById('summary-name'),
+            summaryGithub: document.getElementById('summary-github'),
+            
+            scoreBlockGithub: document.getElementById('score-block-github'),
+            scoreBlockLinkedin: document.getElementById('score-block-linkedin'),
+            scoreMathPlus: document.getElementById('score-math-plus'),
+            scoreMathEquals: document.getElementById('score-math-equals'),
+            scoreGithubVal: document.getElementById('score-github-val'),
+            scoreLinkedinVal: document.getElementById('score-linkedin-val'),
+            scoreTotalVal: document.getElementById('score-total-val'),
+            scoreTotalLabel: document.getElementById('score-total-label'),
+            
+            kpiRepos: document.getElementById('kpi-repos'),
+            kpiFollowers: document.getElementById('kpi-followers'),
+            kpiStars: document.getElementById('kpi-stars'),
+            kpiConnections: document.getElementById('kpi-connections'),
+            kpiLiSkills: document.getElementById('kpi-li-skills'),
+            kpiLiCerts: document.getElementById('kpi-li-certs'),
+            kpiLiExp: document.getElementById('kpi-li-exp'),
+            kpiLiCompleteness: document.getElementById('kpi-li-completeness'),
+            liUrlBadge: document.getElementById('li-url-badge'),
+            
+            languageChartCtx: document.getElementById('language-chart'),
+            activityChartCtx: document.getElementById('activity-chart'),
+            reposGrid: document.getElementById('repos-grid'),
+            
+            swStrengths: document.getElementById('sw-strengths'),
+            swWeaknesses: document.getElementById('sw-weaknesses'),
+            linkedinAuthorCheck: document.getElementById('linkedin-author-check'),
+            linkedinManualForm: document.getElementById('linkedin-manual-form'),
+            linkedinManualSubmit: document.getElementById('linkedin-manual-submit'),
+            linkedinUrlInput: document.getElementById('linkedin-url-input'),
+            linkedinUrlBtn: document.getElementById('linkedin-url-btn')
+        };
+
+        const CHART_COLORS = ["#0A66C2", "#21C55D", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4", "#F97316"];
+        const COLOR_OTHERS = "#94A3B8";
+
+        // LinkedIn URL Save
+        elements.linkedinUrlBtn.addEventListener('click', () => {
+            const url = elements.linkedinUrlInput.value.trim();
+            if (url && (url.includes('linkedin.com/in/') || url.includes('linkedin.com/pub/'))) {
+                state.linkedin.url = url;
+                elements.linkedinUrlBtn.textContent = '✅ Saved';
+                elements.linkedinUrlBtn.style.background = 'var(--success)';
+                setTimeout(() => { elements.linkedinUrlBtn.textContent = 'Save'; elements.linkedinUrlBtn.style.background = ''; }, 2000);
+                renderDashboard();
+            } else if (url) {
+                elements.linkedinUrlBtn.textContent = '❌ Invalid';
+                elements.linkedinUrlBtn.style.background = 'var(--danger)';
+                setTimeout(() => { elements.linkedinUrlBtn.textContent = 'Save'; elements.linkedinUrlBtn.style.background = ''; }, 2000);
+            }
+        });
+
+        // Checkbox: unlock manual form + PDF upload
+        elements.linkedinAuthorCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                elements.linkedinManualForm.style.display = 'block';
+                elements.linkedinUploadLabel.style.display = 'block';
+                elements.linkedinUpload.disabled = false;
+                elements.linkedinUploadLabel.style.cursor = 'pointer';
+                elements.linkedinUploadLabel.style.opacity = '1';
+            } else {
+                elements.linkedinManualForm.style.display = 'none';
+                elements.linkedinUploadLabel.style.display = 'none';
+                elements.linkedinUpload.disabled = true;
+            }
+        });
+
+        // Manual form submit
+        elements.linkedinManualSubmit.addEventListener('click', () => {
+            const connRaw = document.getElementById('li-connections').value.trim();
+            const skills = parseInt(document.getElementById('li-skills').value) || 0;
+            const certs = parseInt(document.getElementById('li-certs').value) || 0;
+            const exp = parseInt(document.getElementById('li-experience').value) || 0;
+            const hasPhoto = document.getElementById('li-has-photo').checked;
+            const hasHeadline = document.getElementById('li-has-headline').checked;
+            const hasAbout = document.getElementById('li-has-about').checked;
+            const hasFeatured = document.getElementById('li-has-featured').checked;
+
+            state.linkedin.manual = { connections: connRaw || '-', skills, certs, experience: exp, hasPhoto, hasHeadline, hasAbout, hasFeatured };
+            state.linkedin.manualSubmitted = true;
+            state.linkedin.loaded = true;
+
+            elements.linkedinManualSubmit.textContent = '✅ Score updated!';
+            elements.linkedinManualSubmit.style.background = 'var(--success)';
+            setTimeout(() => { elements.linkedinManualSubmit.textContent = '✅ Calculate LinkedIn Score'; elements.linkedinManualSubmit.style.background = ''; }, 2000);
+            renderDashboard();
+        });
+
+        // --- GITHUB FETCHING ---
+        async function githubFetch(endpoint) {
+            const response = await fetch(`https://api.github.com${endpoint}`, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+            if (response.status === 404) throw new Error('GitHub profile not found.');
+            if (response.status === 403) throw new Error('GitHub API rate limit reached.');
+            if (!response.ok) throw new Error('Network error.');
+            return response.json();
+        }
+
+        async function handleGithubFetch() {
+            const username = elements.githubInput.value.trim();
+            if (!username) return showGithubError("Enter a GitHub username");
+            
+            hideGithubError();
+            elements.githubFetchBtn.disabled = true;
+            elements.githubSpinner.style.display = 'inline-block';
+
+            try {
+                const user = await githubFetch(`/users/${username}`);
+                let repos = [];
+                let page = 1;
+                while (true) {
+                    const batch = await githubFetch(`/users/${username}/repos?per_page=100&page=${page}&sort=updated`);
+                    repos = repos.concat(batch);
+                    if (batch.length < 100) break;
+                    page++;
+                }
+                
+                let events = [];
+                try { events = await githubFetch(`/users/${username}/events/public?per_page=100`); } catch(e) {}
+
+                state.github = { loaded: true, username, user, repos, events, error: null };
+                
+                elements.githubFetchBtn.style.display = 'none';
+                elements.githubClearBtn.style.display = 'inline-block';
+                elements.githubInput.disabled = true;
+                
+                renderDashboard();
+            } catch (err) {
+                showGithubError(err.message);
+            } finally {
+                elements.githubFetchBtn.disabled = false;
+                elements.githubSpinner.style.display = 'none';
+            }
+        }
+
+        elements.githubClearBtn.addEventListener('click', () => {
+            state.github.loaded = false;
+            elements.githubInput.value = '';
+            elements.githubInput.disabled = false;
+            elements.githubFetchBtn.style.display = 'inline-block';
+            elements.githubClearBtn.style.display = 'none';
+            if (state.charts.language) state.charts.language.destroy();
+            if (state.charts.activity) state.charts.activity.destroy();
+            hideGithubError();
+            renderDashboard();
+        });
+
+        function showGithubError(msg) { elements.githubError.textContent = msg; elements.githubError.style.display = 'block'; }
+        function hideGithubError() { elements.githubError.style.display = 'none'; }
+
+        // --- LINKEDIN PARSING ---
+        const parseLinkedInText = (text) => {
+            const parsed = { name: "Name not found", connections: "-", skills: [], certifications: 0 };
+            const lines = text.split('\\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            // Fix Name Extraction Bug - skip contact/links/keywords
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.length > 2 && line.length < 50 && 
+                    !line.toLowerCase().includes('contact') && 
+                    !line.toLowerCase().includes('linkedin.com') &&
+                    !line.includes('@') &&
+                    !line.toLowerCase().includes('top skills') &&
+                    !line.toLowerCase().includes('certifications') &&
+                    !line.toLowerCase().includes('languages') &&
+                    !line.toLowerCase().includes('summary') &&
+                    !line.toLowerCase().includes('experience') &&
+                    !line.startsWith('Page ')) {
+                    parsed.name = line;
+                    break;
+                }
+            }
+
+            const connMatch = text.match(/(\\d+\\+?)\\s+connections?/i) || text.match(/(\\d+\\+?)\\s+followers?/i) || text.match(/(\\d+,?\\d*)\\s+followers/i);
+            if (connMatch) parsed.connections = connMatch[1];
+
+            const skillsStart = text.indexOf('Skills');
+            if (skillsStart !== -1) {
+                const sections = ['Experience', 'Education', 'Licenses & Certifications', 'Languages', 'Volunteer Experience', 'Accomplishments', 'Projects', 'Honors & Awards', 'Page '];
+                let nextSectionIdx = text.length;
+                for (const sec of sections) {
+                    const idx = text.indexOf(sec, skillsStart + 6);
+                    if (idx !== -1 && idx < nextSectionIdx) nextSectionIdx = idx;
+                }
+                const skillsText = text.substring(skillsStart + 6, nextSectionIdx);
+                parsed.skills = skillsText.split(/[\\n•·,]/).map(s => s.trim()).filter(s => s.length > 1 && s.length < 60);
+            }
+
+            const certStart = text.indexOf('Licenses & Certifications');
+            if (certStart !== -1) {
+                let nextSectionIdx = text.length;
+                const sections = ['Skills', 'Experience', 'Education', 'Languages', 'Volunteer Experience', 'Accomplishments', 'Projects', 'Honors & Awards', 'Page '];
+                for (const sec of sections) {
+                    const idx = text.indexOf(sec, certStart + 25);
+                    if (idx !== -1 && idx < nextSectionIdx) nextSectionIdx = idx;
+                }
+                const certText = text.substring(certStart + 25, nextSectionIdx);
+                const certLines = certText.split('\\n').filter(l => l.trim().length > 2);
+                parsed.certifications = Math.floor(certLines.length / 3) || (certLines.length > 0 ? 1 : 0); 
+            }
+            return parsed;
+        };
+
+        elements.linkedinUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith('.pdf')) {
+                return showLinkedinError("Only PDF files are accepted.");
+            }
+            hideLinkedinError();
+            elements.linkedinUploadLabel.style.opacity = '0.7';
+            elements.linkedinSpinner.style.display = 'inline-block';
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    fullText += textContent.items.map(item => item.str).join(' ') + '\\n';
+                }
+
+                if (!fullText.trim()) throw new Error("Could not extract text. PDF might be protected.");
+                
+                state.linkedin.rawText = fullText;
+                state.linkedin.parsed = parseLinkedInText(fullText);
+                state.linkedin.filename = file.name;
+                state.linkedin.loaded = true;
+
+                elements.linkedinUploadLabel.style.display = 'none';
+                elements.linkedinFileInfo.style.display = 'flex';
+                elements.linkedinFilename.textContent = file.name + ' ✅';
+                
+                renderDashboard();
+            } catch (err) {
+                showLinkedinError("Could not parse this PDF. " + err.message);
+            } finally {
+                elements.linkedinUploadLabel.style.opacity = '1';
+                elements.linkedinSpinner.style.display = 'none';
+                elements.linkedinUpload.value = '';
+            }
+        });
+
+        elements.linkedinRemoveBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            state.linkedin.loaded = false;
+            elements.linkedinUploadLabel.style.display = 'block';
+            elements.linkedinFileInfo.style.display = 'none';
+            hideLinkedinError();
+            renderDashboard();
+        });
+
+        function showLinkedinError(msg) { elements.linkedinError.textContent = msg; elements.linkedinError.style.display = 'block'; }
+        function hideLinkedinError() { elements.linkedinError.style.display = 'none'; }
+
+        // --- DASHBOARD RENDERING & SCORING ---
+        function formatNumber(num) {
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num;
+        }
+
+        function calculateGitHubPoints(user, repos, events) {
+            let pts = 0;
+            if (user.public_repos > 0) pts += 10;
+            pts += Math.min((user.public_repos / 10) * 10, 10);
+            const totalStars = repos.reduce((sum, r) => sum + r.stargazers_count, 0);
+            pts += Math.min((totalStars / 50) * 10, 10);
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const recentEvents = events.filter(e => new Date(e.created_at) > thirtyDaysAgo).length;
+            pts += Math.min(recentEvents * 2, 10);
+            if (user.bio) pts += 3;
+            if (user.location) pts += 3;
+            if (user.blog) pts += 4;
+            return Math.round(pts);
+        }
+
+        function getScoreColor(score, max) {
+            const pct = score / max;
+            if (pct <= 0.4) return 'var(--danger)';
+            if (pct <= 0.7) return 'var(--warning)';
+            if (pct <= 0.85) return 'var(--primary)';
+            return 'var(--success)';
+        }
+
+        function renderDashboard() {
+            if (!state.github.loaded && !state.linkedin.loaded) {
+                elements.dashboardSection.style.display = 'none';
+                return;
+            }
+            elements.dashboardSection.style.display = 'block';
+
+            // Identify & Top Summary
+            let dispName = "Profile";
+            if (state.github.loaded) dispName = state.github.user.name || state.github.user.login;
+            if (state.linkedin.loaded && state.linkedin.parsed.name !== "Name not found") dispName = state.linkedin.parsed.name;
+            elements.summaryName.textContent = dispName;
+            
+            if (state.github.loaded && state.github.user.avatar_url) {
+                elements.summaryAvatar.src = state.github.user.avatar_url;
+                elements.summaryAvatar.style.display = 'block';
+            } else {
+                elements.summaryAvatar.style.display = 'none';
+            }
+
+            if (state.github.loaded) {
+                elements.summaryGithub.textContent = `GitHub: @${state.github.user.login}`;
+                elements.summaryGithub.style.display = 'inline';
+            } else {
+                elements.summaryGithub.style.display = 'none';
+            }
+
+            // Calculations — prefer manual data over PDF parsed data
+            let ghPts = state.github.loaded ? calculateGitHubPoints(state.github.user, state.github.repos, state.github.events) : 0;
+            let liPts = 0;
+            if (state.linkedin.loaded) {
+                const m = state.linkedin.manual;
+                const li = state.linkedin.parsed;
+
+                if (state.linkedin.manualSubmitted) {
+                    // Score purely from manual form — accurate & fair
+                    liPts = 5; // base for submitting
+                    const connNum = parseInt((m.connections || '0').replace(/[^0-9]/g, '')) || 0;
+                    liPts += Math.min((connNum / 500) * 15, 15); // up to 15 for connections
+                    liPts += Math.min(m.skills * 1.5, 12);       // up to 12 for skills
+                    liPts += Math.min(m.certs * 3, 9);           // up to 9 for certs
+                    liPts += Math.min(m.experience * 0.5, 4);    // up to 4 for experience
+                    if (m.hasPhoto) liPts += 2;                  // +2 profile photo
+                    if (m.hasHeadline) liPts += 1;               // +1 headline
+                    if (m.hasAbout) liPts += 1;                  // +1 about
+                    if (m.hasFeatured) liPts += 1;               // +1 featured
+                } else if (li.skills.length > 0 || li.certifications > 0) {
+                    // Fallback to PDF parsed data
+                    liPts = 10;
+                    if (li.skills.length > 0) liPts += Math.min(li.skills.length * 2, 10);
+                    if (li.certifications > 0) liPts += 10;
+                    let connNum = parseInt((li.connections || '0').replace(/[^0-9]/g, '')) || 0;
+                    liPts += Math.min((connNum / 500) * 20, 20);
+                }
+                liPts = Math.round(Math.min(liPts, 50));
+            }
+
+            // Scoring UI Adjustments
+            if (state.github.loaded && state.linkedin.loaded) {
+                elements.scoreBlockGithub.style.display = 'flex';
+                elements.scoreMathPlus.style.display = 'block';
+                elements.scoreBlockLinkedin.style.display = 'flex';
+                elements.scoreMathEquals.style.display = 'block';
+                
+                elements.scoreGithubVal.textContent = `${ghPts}/50`;
+                elements.scoreLinkedinVal.textContent = `${liPts}/50`;
+                
+                const total = ghPts + liPts;
+                elements.scoreTotalVal.textContent = total;
+                elements.scoreTotalVal.style.borderColor = getScoreColor(total, 100);
+                elements.scoreTotalLabel.textContent = "Overall Score / 100";
+            } else if (state.github.loaded) {
+                elements.scoreBlockGithub.style.display = 'none';
+                elements.scoreMathPlus.style.display = 'none';
+                elements.scoreBlockLinkedin.style.display = 'none';
+                elements.scoreMathEquals.style.display = 'none';
+                
+                const pct = Math.round((ghPts / 50) * 100);
+                elements.scoreTotalVal.textContent = pct;
+                elements.scoreTotalVal.style.borderColor = getScoreColor(pct, 100);
+                elements.scoreTotalLabel.textContent = "GitHub Score / 100";
+            } else if (state.linkedin.loaded) {
+                elements.scoreBlockGithub.style.display = 'none';
+                elements.scoreMathPlus.style.display = 'none';
+                elements.scoreBlockLinkedin.style.display = 'none';
+                elements.scoreMathEquals.style.display = 'none';
+                
+                const pct = Math.round((liPts / 50) * 100);
+                elements.scoreTotalVal.textContent = pct;
+                elements.scoreTotalVal.style.borderColor = getScoreColor(pct, 100);
+                elements.scoreTotalLabel.textContent = "LinkedIn Score / 100";
+            }
+
+            // LinkedIn URL badge
+            if (state.linkedin.url) {
+                elements.liUrlBadge.href = state.linkedin.url;
+                elements.liUrlBadge.style.display = 'inline-block';
+            } else {
+                elements.liUrlBadge.style.display = 'none';
+            }
+
+            // GitHub Column
+            if (state.github.loaded) {
+                elements.colGithub.style.display = 'block';
+                const user = state.github.user;
+                const repos = state.github.repos;
+                const events = state.github.events;
+                
+                elements.kpiRepos.textContent = user.public_repos;
+                elements.kpiFollowers.textContent = formatNumber(user.followers);
+                elements.kpiStars.textContent = formatNumber(repos.reduce((s, r) => s + r.stargazers_count, 0));
+
+                const langCounts = {};
+                repos.forEach(repo => { if (repo.language) langCounts[repo.language] = (langCounts[repo.language] || 0) + 1; });
+                const sortedLangs = Object.entries(langCounts).sort((a, b) => b[1] - a[1]);
+
+                const targetEvents = ['PushEvent', 'PullRequestEvent', 'IssuesEvent', 'CreateEvent'];
+                const validEvents = events.filter(e => targetEvents.includes(e.type));
+                
+                renderGithubCharts(sortedLangs, validEvents);
+                renderReposList(repos);
+            } else {
+                elements.colGithub.style.display = 'none';
+            }
+
+            // LinkedIn Column
+            if (state.linkedin.loaded) {
+                elements.colLinkedin.style.display = 'block';
+                
+                // Pick data source: manual > PDF parsed
+                const m = state.linkedin.manual;
+                const li = state.linkedin.parsed;
+                const useManual = state.linkedin.manualSubmitted;
+
+                const displayConns = useManual ? (m.connections || '-') : (li.connections || '-');
+                const displaySkills = useManual ? m.skills : li.skills.length;
+                const displayCerts = useManual ? m.certs : li.certifications;
+                const displayExp = useManual ? (m.experience > 0 ? m.experience + ' yrs' : '-') : '-';
+
+                // Completeness % from manual checkboxes
+                let completeness = 0;
+                if (useManual) {
+                    if (m.hasPhoto) completeness += 25;
+                    if (m.hasHeadline) completeness += 25;
+                    if (m.hasAbout) completeness += 25;
+                    if (m.hasFeatured) completeness += 25;
+                }
+
+                elements.kpiConnections.textContent = displayConns;
+                elements.kpiLiSkills.textContent = displaySkills || '-';
+                elements.kpiLiCerts.textContent = displayCerts || '-';
+                elements.kpiLiExp.textContent = displayExp;
+                elements.kpiLiCompleteness.textContent = useManual ? completeness + '%' : 'Fill form';
+
+                renderStrengthsWeaknesses(ghPts, liPts);
+            } else {
+                elements.colLinkedin.style.display = 'none';
+            }
+        }
+
+        function renderStrengthsWeaknesses(ghPts, liPts) {
+            elements.swStrengths.innerHTML = '';
+            elements.swWeaknesses.innerHTML = '';
+            
+            const s = [], w = [];
+            
+            if (state.github.loaded) {
+                const repoCount = state.github.repos.length;
+                const stars = state.github.repos.reduce((sum, r) => sum + r.stargazers_count, 0);
+                if (repoCount > 10) s.push('Prolific coder with ' + repoCount + ' public repositories.');
+                else w.push('Publish more public repositories to boost your GitHub presence.');
+                if (stars > 20) s.push('Strong community recognition — ' + stars + ' total stars across repositories.');
+                else if (stars > 0) s.push(stars + ' stars received — keep contributing to grow recognition.');
+                if (state.github.user.bio) s.push('GitHub profile has a bio, improving discoverability.');
+                else w.push('Add a GitHub bio to help people know who you are.');
+                if (ghPts < 15) w.push('Low recent GitHub activity. Try to push code more regularly.');
+            }
+            
+            if (state.linkedin.loaded) {
+                const m = state.linkedin.manual;
+                const li = state.linkedin.parsed;
+                const useManual = state.linkedin.manualSubmitted;
+
+                const connStr = useManual ? m.connections : li.connections;
+                const connNum = parseInt((connStr || '0').replace(/[^0-9]/g, '')) || 0;
+                const skills = useManual ? m.skills : li.skills.length;
+                const certs = useManual ? m.certs : li.certifications;
+
+                if (connStr && connStr.includes('500')) s.push('Outstanding network reach with 500+ LinkedIn connections.');
+                else if (connNum >= 300) s.push('Good LinkedIn network with ' + connNum + ' connections.');
+                else if (connNum > 0) w.push('Grow your LinkedIn network — aim for 500+ connections for better reach.');
+                else w.push('Add your connections count via the Self-Assessment form for better scoring.');
+
+                if (skills >= 10) s.push('Well-rounded skill set with ' + skills + ' listed skills.');
+                else if (skills > 0) w.push('Add more skills to your LinkedIn profile (currently ' + skills + ').');
+                else w.push('No skills detected. Add your skills via the Self-Assessment form.');
+
+                if (certs >= 3) s.push('Strong commitment to learning with ' + certs + ' certifications.');
+                else if (certs > 0) s.push(certs + ' certification(s) listed — great for credibility.');
+                else w.push('Add certifications or courses to demonstrate continuous learning.');
+
+                if (useManual) {
+                    if (m.hasPhoto && m.hasHeadline && m.hasAbout) s.push('Profile is complete with photo, headline, and About section.');
+                    else {
+                        if (!m.hasPhoto) w.push('Add a professional profile photo to increase engagement.');
+                        if (!m.hasHeadline) w.push('Write a compelling professional headline to attract recruiters.');
+                        if (!m.hasAbout) w.push('Fill in your About section — it greatly improves profile views.');
+                    }
+                    if (m.experience >= 3) s.push(m.experience + ' years of work experience showcased.');
+                }
+            }
+            
+            if (s.length === 0) s.push('Start building your profile to see your strengths here.');
+            if (w.length === 0) w.push('🎉 Your profile looks incredibly solid! Keep it up.');
+
+            s.forEach(text => { const li = document.createElement('li'); li.textContent = text; elements.swStrengths.appendChild(li); });
+            w.forEach(text => { const li = document.createElement('li'); li.textContent = text; elements.swWeaknesses.appendChild(li); });
+        }
+
+        function renderGithubCharts(sortedLangs, events) {
+            if (state.charts.language) state.charts.language.destroy();
+            if (state.charts.activity) state.charts.activity.destroy();
+
+            if (sortedLangs.length > 0) {
+                const labels = [], data = [], colors = [];
+                sortedLangs.forEach((lang, index) => {
+                    if (index < 6) { labels.push(lang[0]); data.push(lang[1]); colors.push(CHART_COLORS[index % CHART_COLORS.length]); } 
+                    else if (index === 6) { labels.push('Others'); data.push(lang[1]); colors.push(COLOR_OTHERS); } 
+                    else { data[6] += lang[1]; }
+                });
+                state.charts.language = new Chart(elements.languageChartCtx, {
+                    type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: colors }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } } }
+                });
+            } else {
+                state.charts.language = new Chart(elements.languageChartCtx, { type: 'doughnut', data: { labels: ['No Data'], datasets: [{ data: [1], backgroundColor: ['#E0E0E0'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { tooltip: { enabled: false } } } });
+            }
+
+            const monthLabels = [], monthData = new Array(12).fill(0), now = new Date();
+            for (let i = 11; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                monthLabels.push(`${d.toLocaleString('default', { month: 'short' })} '${d.getFullYear().toString().slice(2)}`);
+            }
+            events.forEach(e => {
+                const d = new Date(e.created_at);
+                const monthDiff = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
+                if (monthDiff >= 0 && monthDiff < 12) monthData[11 - monthDiff]++;
+            });
+            state.charts.activity = new Chart(elements.activityChartCtx, {
+                type: 'bar', data: { labels: monthLabels, datasets: [{ label: 'Events', data: monthData, backgroundColor: 'rgba(10, 102, 194, 0.8)', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function renderReposList(repos) {
+            elements.reposGrid.innerHTML = '';
+            const sortedRepos = [...repos].sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 4);
+            sortedRepos.forEach(repo => {
+                const card = document.createElement('div');
+                card.className = 'repo-card';
+                const langColor = repo.language ? CHART_COLORS[repo.language.charCodeAt(0) % CHART_COLORS.length] : COLOR_OTHERS;
+                card.innerHTML = `
+                    <a href="${repo.html_url}" target="_blank" class="repo-name">${repo.name}</a>
+                    <div class="repo-desc">${repo.description || ''}</div>
+                    <div class="repo-meta">
+                        ${repo.language ? `<span><i class="repo-language-color" style="background:${langColor}"></i> ${repo.language}</span>` : ''}
+                        <span>⭐ ${formatNumber(repo.stargazers_count)}</span>
+                    </div>
+                `;
+                elements.reposGrid.appendChild(card);
+            });
+        }
+
+        // --- EXPORT FUNCTIONALITY ---
+        async function exportAsImage() {
+            const dashboard = document.getElementById('dashboard-section');
+            const canvas = await html2canvas(dashboard, { scale: 2, useCORS: true });
+            const link = document.createElement('a');
+            link.download = 'ProfilePulse-Dashboard.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        async function exportAsPDF() {
+            const dashboard = document.getElementById('dashboard-section');
+            const canvas = await html2canvas(dashboard, { scale: 2, useCORS: true });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('ProfilePulse-Dashboard.pdf');
+        }
+
+        // Event Listeners
+        elements.githubFetchBtn.addEventListener('click', handleGithubFetch);
+        elements.githubInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleGithubFetch(); });
+        elements.githubInput.addEventListener('input', hideGithubError);
+    </script>
+</body>
+</html>
