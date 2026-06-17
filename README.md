@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=32&pause=1000&color=0A66C2&center=true&vCenter=true&width=900&height=60&lines=ProfilePulse+%F0%9F%9A%80;One+Dashboard.+Your+Full+Story.;GitHub+%2B+LinkedIn+United+%F0%9F%A4%9D;Built+for+Students+%2C+Aspirants+%26+Recruiters" alt="ProfilePulse Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=48&pause=1000&color=0A66C2&center=true&vCenter=true&width=500&height=80&lines=ProfilePulse" alt="ProfilePulse" />
 
 <br/>
 
