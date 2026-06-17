@@ -22,7 +22,7 @@
 
 ---
 
-## 🤝 GitHub + LinkedIn — United
+## 🤝 GitHub + LinkedIn - United
 
 <div align="center">
 
@@ -32,7 +32,7 @@
 
 </div>
 
-ProfilePulse is a **free, browser-based profile intelligence dashboard** that combines your GitHub public data and LinkedIn exported data into one clean, visual report — built for students, aspirants, and recruiters who value their time.
+ProfilePulse is a **free, browser-based profile intelligence dashboard** that combines your GitHub public data and LinkedIn exported data into one clean, visual report built for students, aspirants, and recruiters who value their time.
 
 > No login. No server. No data stored. Everything runs in your browser.
 
@@ -43,10 +43,10 @@ ProfilePulse is a **free, browser-based profile intelligence dashboard** that co
 | Feature | Details |
 |---|---|
 | 🐙 **GitHub Live Data** | Fetches repos, stars, languages, activity via GitHub public API |
-| 📄 **LinkedIn PDF Parsing** | Parses user's own LinkedIn export PDF — no URL scraping |
+| 📄 **LinkedIn PDF Parsing** | Parses user's own LinkedIn export PDF - no URL scraping |
 | 📊 **5 Visual Charts** | Donut, bar, horizontal bar, radar, career timeline |
-| 🎯 **Profile Strength Score** | 0–100 score from 10 sub-metrics across both platforms |
-| 🔐 **Zero Data Storage** | All processing happens in your browser — nothing leaves your device |
+| 🎯 **Profile Strength Score** | 0-100 score from 10 sub-metrics across both platforms |
+| 🔐 **Zero Data Storage** | All processing happens in your browser - nothing leaves your device |
 | ⚖️ **100% Legal** | GitHub public API only + user's own LinkedIn export |
 | 📱 **Mobile Responsive** | Works on Chrome, Firefox, Edge, Safari, and mobile |
 | 🌙 **Dark / Light Theme** | Full dark and light mode with smooth toggle |
@@ -103,12 +103,12 @@ Architecture → Single HTML file, no backend, no database
 
 ## 🔐 Privacy & Legal
 
-- ✅ GitHub public API only — no scraping
-- ✅ LinkedIn PDF is user's own exported data — user uploads voluntarily
+- ✅ GitHub public API only - no scraping
+- ✅ LinkedIn PDF is user's own exported data - user uploads voluntarily
 - ✅ No LinkedIn URL input anywhere in the app
 - ✅ Zero cookies, zero tracking, zero analytics
-- ✅ No data sent to any server — session only
-- ✅ Refresh the page — all data is gone
+- ✅ No data sent to any server - session only
+- ✅ Refresh the page - all data is gone
 
 ---
 
